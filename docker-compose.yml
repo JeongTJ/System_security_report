@@ -36,19 +36,6 @@ services:
       - "4000:4000"
     restart: always
 
-  db:
-    image: postgres:15
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: demo
-      POSTGRES_PASSWORD: demo_pass
-      POSTGRES_DB: demo_db
-    volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-      - ./db/data:/var/lib/postgresql/data
-    restart: always
-
   waf:
     build:
       context: ./waf_server
