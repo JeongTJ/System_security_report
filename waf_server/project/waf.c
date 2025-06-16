@@ -1,9 +1,7 @@
-#define PCRE2_CODE_UNIT_WIDTH 8
 #include <event2/event.h>
 #include <event2/listener.h>
 #include <event2/bufferevent.h>
 #include <event2/buffer.h>
-#include <pcre2.h>
 #include <arpa/inet.h>
 #include <string.h>
 #include <stdlib.h>
@@ -25,7 +23,6 @@ static const char *PATTERNS[NUM_RULES] = {
     "SELECT.+FROM.+WHERE",
     "on[\\w]+\\s*=",
 };
-static pcre2_code *RULES[NUM_RULES];
 
 typedef struct proxy_ctx_s {
     struct bufferevent *client_bev;
@@ -70,10 +67,6 @@ static int is_malicious(const char *data, size_t len) {
 			if (pattern_idx == pattern_len)
 				return 1;
 		}
-        // if (!RULES[i]) continue;
-        // if (pcre2_match(RULES[i], (PCRE2_SPTR)data, len, 0, 0, NULL, NULL) >= 0) {
-        //     return 1;
-        // }
     }
 
     // 2) URL 디코드 후 재검사 (퍼센트/플러스 처리)
@@ -98,10 +91,6 @@ static int is_malicious(const char *data, size_t len) {
 			if (pattern_idx == pattern_len)
 				return 1;
 		}
-        // if (!RULES[i]) continue;
-        // if (pcre2_match(RULES[i], (PCRE2_SPTR)decoded, dlen, 0, 0, NULL, NULL) >= 0) {
-        //     return 1;
-        // }
     }
     return 0;
 }
@@ -206,29 +195,10 @@ int main() {
 
     printf("WAF listening on :%d, forwarding to %s:%d\n", LISTEN_PORT, BACKEND_HOST, BACKEND_PORT);
 
-    for (int i = 0; i < NUM_RULES; i++) {
-        int errcode; PCRE2_SIZE erroff;
-        RULES[i] = pcre2_compile(
-            (PCRE2_SPTR)PATTERNS[i],
-            PCRE2_ZERO_TERMINATED,
-            PCRE2_CASELESS,
-            &errcode,
-            &erroff,
-            NULL);
-        if (!RULES[i]) {
-            fprintf(stderr, "[WAF] Regex compile failed for pattern %d (code %d) at offset %d\n",
-                    i, errcode, (int)erroff);
-        }
-    }
-
     event_base_dispatch(base);
 
     evconnlistener_free(listener);
     event_base_free(base);
-
-    for (int i=0; i<NUM_RULES; i++) {
-        pcre2_code_free(RULES[i]);
-    }
 
     return 0;
 } 
