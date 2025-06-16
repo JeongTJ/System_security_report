@@ -74,3 +74,19 @@ docker compose logs -f waf | cat  # WAF 차단 로그 실시간 확인
    ```
 
 각 요청이 403 Forbidden 으로 차단되는지, attacker 로그에 쿠키가 찍히는지 확인한다.
+
+## 개발자 정보
+<table>
+  <td align="center" width="160px">
+      <a href="https://github.com/ssxrxbx"><img height="120px" width="120px" src="https://avatars.githubusercontent.com/ssxrxbx"/></a>
+      <br/>
+      <a href="https://github.com/ssxrxbx"><strong>성수립</strong></a>
+      <br />
+  </td>
+  <td align="center" width="160px">
+      <a href="https://github.com/JeongTJ"><img height="120px" width="120px" src="https://avatars.githubusercontent.com/JeongTJ"/></a>
+      <br/>
+      <a href="https://github.com/JeongTJ"><strong>정태준</strong></a>
+      <br />
+  </td> 
+</table>
